@@ -1,49 +1,109 @@
-const {google} = require('googleapis');
-
-const gmail = google.gmail({version: 'v1', auth});
+const { google } = require('googleapis');
+const fs = require('fs');
+const readline = require('readline');
 
 const googleConfig = {
-  clientId: '<GOOGLE_CLIENT_ID>', // e.g. asdfghjkljhgfdsghjk.apps.googleusercontent.com
-  clientSecret: '<GOOGLE_CLIENT_SECRET>', // e.g. _ASDFA%DFASDFASDFASD#FAD-
-  redirect: 'https://your-website.com/google-auth' // this must match your google api settings
+  clientId: '278281862588-mg5p1548due7nd59hj6r4h30f7anol4v.apps.googleusercontent.com',
+  clientSecret: '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',
+  redirect: "https://email-schedula.herokuapp.com/",
 };
 
-
-/**
- * Create the google auth object which gives us access to talk to google's apis.
- */
-function createConnection() {
-  return new google.auth.OAuth2(
-    googleConfig.clientId,
-    googleConfig.clientSecret,
-    googleConfig.redirect
-  );
-}
-
-/**
- * This scope tells google what information we want to request.
- */
- const defaultScope = [
-  'https://www.googleapis.com/auth/plus.me',
+const SCOPES = [
+  'https://www.googleapis.com/auth/gmail.send',
   'https://www.googleapis.com/auth/userinfo.email',
 ];
 
-/**
- * Get a url which will open the google sign-in page and request access to the scope provided (such as calendar events).
- */
-function getConnectionUrl(auth) {
-  return auth.generateAuthUrl({
-    access_type: 'offline',
-    prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
-    scope: defaultScope
+const TOKEN_PATH = 'token.json';
+
+// fs.readFile('credentials.json', (err, content) => {
+//   if (err) return console.log('Error loading client secret file:', err);
+//   // Authorize a client with credentials, then call the Gmail API.
+//   authorize(JSON.parse(content), listLabels);
+// });
+
+// function authorize(credentials, callback) {
+//   const { client_secret, client_id, redirect_uris } = credentials.web;
+//   const oAuth2Client = new google.auth.OAuth2(
+//     client_id, client_secret, redirect_uris[0]);
+
+//   // Check if we have previously stored a token.
+//   fs.readFile(TOKEN_PATH, (err, token) => {
+//     if (err) return getNewToken(oAuth2Client, callback);
+//     oAuth2Client.setCredentials(JSON.parse(token));
+//     callback(oAuth2Client);
+//   });
+// }
+
+// function getNewToken(oAuth2Client, callback) {
+//   const authUrl = oAuth2Client.generateAuthUrl({
+//     access_type: 'offline',
+//     scope: SCOPES,
+//   });
+//   console.log('Authorize this app by visiting this url:', authUrl);
+//   const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//   });
+//   rl.question('Enter the code from that page here: ', (code) => {
+//     rl.close();
+//     oAuth2Client.getToken(code, (err, token) => {
+//       if (err) return console.error('Error retrieving access token', err);
+//       oAuth2Client.setCredentiasls(token);
+//       // Store the token to disk for later program executions
+//       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+//         if (err) return console.error(err);
+//         console.log('Token stored to', TOKEN_PATH);
+//       });
+//       callback(oAuth2Client);
+//     });
+//   });
+// }
+
+function getUrl() {
+  let authUrl = ''
+  fs.readFile('credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    let credentials = JSON.parse(content)
+    console.log(content)
+    const { client_secret, client_id, redirect_uris } = credentials.web;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) {
+        const authUrl = oAuth2Client.generateAuthUrl({
+          access_type: 'offline',
+          scope: SCOPES,
+        });
+        // console.log({authUrl})
+        global_url = authUrl;
+        return authUrl
+      }
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+
+    console.log('anything')
   });
+
 }
 
-/**
- * Create the google url to be sent to the client.
- */
-function urlGoogle() {
-  const auth = createConnection(); // this is from previous step
-  const url = getConnectionUrl(auth);
-  return url;
-}
+// function listLabels(auth) {
+//   const gmail = google.gmail({ version: 'v1', auth });
+//   gmail.users.labels.list({
+//     userId: 'me',
+//   }, (err, res) => {
+//     if (err) return console.log('The API returned an error: ' + err);
+//     const labels = res.data.labels;
+//     if (labels.length) {
+//       console.log('Labels:');
+//       labels.forEach((label) => {
+//         console.log(`- ${label.name}`);
+//       });
+//     } else {
+//       console.log('No labels found.');
+//     }
+//   });
+// }
+
+module.exports = getUrl;

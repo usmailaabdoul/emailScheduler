@@ -6,7 +6,8 @@ const routes = require('./routes');
 
 function createApplication() {
   const app = express();
-
+  
+  app.set('view engine', 'ejs');
   app.use(cors());
   app.use(bodyParser.urlencoded({extended: false}));
   app.use(bodyParser.json());

@@ -1,13 +1,19 @@
 const router = require('express').Router();
+const fs = require('fs');
+const readline = require('readline');
+const urlGoogle = require('../helpers/google')
 
-const baseApi = '/api/v1';
 
-router.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+router.get('/', async (req, res) => {
+  const url = urlGoogle()
+  console.log(url)
+  res.render(`pages/index`, {
+    url
+  });
 })
 
 router.get('/terms&service', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+  res.render(`/pages/terms&service`);
 })
-// router.use(baseApi, require('./users'));
+
 module.exports = router;
