@@ -27,9 +27,7 @@ class UserService {
   }
 
   async getUserByToken(id) {
-    console.log({id})
     let user = await UserModel.findOne({'user.id': id}).exec();
-    console.log({user})
     return user
   };
 
@@ -44,7 +42,6 @@ class UserService {
 
   async updateUserCount(id) {
     const user = await this.getUserByToken(id);
-    console.log('current user', user)
     const currentCount = user.count;
     const newCount = currentCount + 1;
     await this.updateCountById(user._id, newCount);

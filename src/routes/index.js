@@ -4,7 +4,6 @@ const UserService = require('../services/users')
 
 router.get('/', async (req, res) => {
   const url = googleApi.getUrl();
-  console.log({url})
   res.render(`pages/index`, {
     url,
   });
@@ -23,7 +22,6 @@ router.get('/statistics', async (req, res) => {
 
 router.get('/success', (req, res) => {
   const query = req.query;
-  console.log(query);
   googleApi.getNewToken(query.code);
 
   res.render(`pages/loginSuccess`, {

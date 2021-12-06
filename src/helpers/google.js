@@ -30,7 +30,6 @@ class GoogleApi {
   }
 
   getNewToken(code) {
-    console.log('getting new token');
     this.auth.getToken(code, (err, token) => {
       if (err) return console.error('Error retrieving access token', err);
       this.auth.setCredentials(token);
@@ -84,7 +83,7 @@ class GoogleApi {
 
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
-    const raw = this.makeBody('ismaelabdul77@gmail.com', 'Women in tech', 'WT04');
+    const raw = this.makeBody('achabill12@gmail.com', 'Women in tech', 'WT04');
     gmail.users.messages.send({
       auth: oAuth2Client,
       userId: 'me',
@@ -94,7 +93,7 @@ class GoogleApi {
     }, function (err, response) {
       if (err) console.log({ err })
 
-      UserService.updateUserCount(user.id).then(() => console.log('Updated count !!!'));
+      UserService.updateUserCount(user.id).then(() => {return});
     });
   }
 }
