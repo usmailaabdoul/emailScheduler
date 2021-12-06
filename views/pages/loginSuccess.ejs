@@ -2,7 +2,6 @@
 
 <head>
   <title>Express HTML</title>
-  <link rel="stylesheet" href="/stylesheet/style.css" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -10,7 +9,6 @@
 
 <body>
   <div style="margin:100px;">
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="#"><span class="h4">Email Scheduler</span></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -31,17 +29,10 @@
         </ul>
       </div>
     </nav>
-    <div class="jumbotron row" style="padding:40px;">
-      <div class="col d-flex flex-column f-1">
-        <h1>Hello, there!</h1>
-        <p>Log in with your google account to vote for <span class="h4">ACHA CYNTHIA</span> for <span class="h6">Woman in Tech</span> for the BTMA awards</p>
-        <div class='mt-auto'>
-          <p><a class="btn btn-primary btn-lg" href=<%=url %> role="button">login with Google</a></p>
-        </div>
-      </div>
-      <div class="col">
-        <img src="/images/image.jpeg" alt="mainImage" width="640" height="500" style="border-radius:5px;">
-      </div>
+    <div class="jumbotron" style="padding:40px;">
+      <h1>Logged in Successfully !</h1>
+      <p>Your account has been connected successfully</p>
+      <p><a class="btn btn-primary btn-lg" href="/" role="button">Back to Home</a></p>
     </div>
   </div>
 </body>

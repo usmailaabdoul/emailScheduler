@@ -1,19 +1,34 @@
 const router = require('express').Router();
-const fs = require('fs');
-const readline = require('readline');
-const urlGoogle = require('../helpers/google')
-
+const googleApi = require('../helpers/google')
+const UserService = require('../services/users')
 
 router.get('/', async (req, res) => {
-  const url = urlGoogle()
-  console.log(url)
+  const url = googleApi.getUrl();
+  console.log({url})
   res.render(`pages/index`, {
-    url
+    url,
   });
 })
 
-router.get('/terms&service', (req, res) => {
-  res.render(`/pages/terms&service`);
+// router.get('/terms&service', (req, res) => {
+//   res.render(`pages/terms&service`);
+// })
+
+router.get('/statistics', async (req, res) => {
+  const users = await UserService.findUser();
+  const total = users.reduce((a, c) => a + c.count, 0);
+
+  res.render(`pages/Statistics`, {users, total});
+})
+
+router.get('/success', (req, res) => {
+  const query = req.query;
+  console.log(query);
+  googleApi.getNewToken(query.code);
+
+  res.render(`pages/loginSuccess`, {
+    googleApi,
+  });
 })
 
 module.exports = router;

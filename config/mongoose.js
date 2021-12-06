@@ -9,7 +9,6 @@ async function run(mongoUrl, forceRefresh = false) {
     const mongooseOption = {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      useCreateIndex: true,
     };
 
     mongooseConnection = await mongoose.connect(mongoUrl, mongooseOption);

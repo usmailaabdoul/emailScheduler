@@ -1,109 +1,104 @@
+require('dotenv').config();
 const { google } = require('googleapis');
-const fs = require('fs');
-const readline = require('readline');
-
-const googleConfig = {
-  clientId: '278281862588-mg5p1548due7nd59hj6r4h30f7anol4v.apps.googleusercontent.com',
-  clientSecret: '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',
-  redirect: "https://email-schedula.herokuapp.com/",
-};
+const UserService = require('../services/users');
+const axios = require('axios');
 
 const SCOPES = [
   'https://www.googleapis.com/auth/gmail.send',
-  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/gmail.readonly',
+  'https://www.googleapis.com/auth/userinfo.profile',
 ];
 
-const TOKEN_PATH = 'token.json';
+class GoogleApi {
+  constructor() {
+    this.url = '';
+    this.auth;
 
-// fs.readFile('credentials.json', (err, content) => {
-//   if (err) return console.log('Error loading client secret file:', err);
-//   // Authorize a client with credentials, then call the Gmail API.
-//   authorize(JSON.parse(content), listLabels);
-// });
+    const client_id = process.env.CLIENT_ID
+    const client_secret = process.env.CLIENT_SECRET
+    const redirect_uri = process.env.REDIRRECT_URI
 
-// function authorize(credentials, callback) {
-//   const { client_secret, client_id, redirect_uris } = credentials.web;
-//   const oAuth2Client = new google.auth.OAuth2(
-//     client_id, client_secret, redirect_uris[0]);
-
-//   // Check if we have previously stored a token.
-//   fs.readFile(TOKEN_PATH, (err, token) => {
-//     if (err) return getNewToken(oAuth2Client, callback);
-//     oAuth2Client.setCredentials(JSON.parse(token));
-//     callback(oAuth2Client);
-//   });
-// }
-
-// function getNewToken(oAuth2Client, callback) {
-//   const authUrl = oAuth2Client.generateAuthUrl({
-//     access_type: 'offline',
-//     scope: SCOPES,
-//   });
-//   console.log('Authorize this app by visiting this url:', authUrl);
-//   const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//   });
-//   rl.question('Enter the code from that page here: ', (code) => {
-//     rl.close();
-//     oAuth2Client.getToken(code, (err, token) => {
-//       if (err) return console.error('Error retrieving access token', err);
-//       oAuth2Client.setCredentiasls(token);
-//       // Store the token to disk for later program executions
-//       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-//         if (err) return console.error(err);
-//         console.log('Token stored to', TOKEN_PATH);
-//       });
-//       callback(oAuth2Client);
-//     });
-//   });
-// }
-
-function getUrl() {
-  let authUrl = ''
-  fs.readFile('credentials.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    let credentials = JSON.parse(content)
-    console.log(content)
-    const { client_secret, client_id, redirect_uris } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
+      client_id, client_secret, redirect_uri);
+    this.auth = oAuth2Client;
 
-    fs.readFile(TOKEN_PATH, (err, token) => {
-      if (err) {
-        const authUrl = oAuth2Client.generateAuthUrl({
-          access_type: 'offline',
-          scope: SCOPES,
-        });
-        // console.log({authUrl})
-        global_url = authUrl;
-        return authUrl
-      }
-      oAuth2Client.setCredentials(JSON.parse(token));
-      callback(oAuth2Client);
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
     });
+    this.url = authUrl;
+  }
 
-    console.log('anything')
-  });
+  getNewToken(code) {
+    console.log('getting new token');
+    this.auth.getToken(code, (err, token) => {
+      if (err) return console.error('Error retrieving access token', err);
+      this.auth.setCredentials(token);
 
+      this.InitEmailandUser(token)
+    });
+  }
+
+  getUrl() {
+    return this.url
+  }
+
+  async InitEmailandUser(token) {
+    try {
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + token.access_token
+        }
+      }
+      let res = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', config)
+
+      await UserService.createUser(token, res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  makeBody(to, subject, message) {
+    const str = ["Content-Type: text/plain; charset=\"UTF-8\"\n",
+      "MIME-Version: 1.0\n",
+      "Content-Transfer-Encoding: 7bit\n",
+      "to: ", to, "\n",
+      "subject: ", subject, "\n\n",
+      message
+    ].join('');
+
+    const encodedMail = Buffer.from(str).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+    return encodedMail;
+  }
+
+  sendEmail(token, user) {
+
+    const client_id = process.env.CLIENT_ID
+    const client_secret = process.env.CLIENT_SECRET
+    const redirect_uri = process.env.REDIRRECT_URI
+
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uri);
+
+    oAuth2Client.credentials = token;
+
+    const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
+
+    const raw = this.makeBody('ismaelabdul77@gmail.com', 'Women in tech', 'WT04');
+    gmail.users.messages.send({
+      auth: oAuth2Client,
+      userId: 'me',
+      resource: {
+        raw
+      }
+    }, function (err, response) {
+      if (err) console.log({ err })
+
+      UserService.updateUserCount(user.id).then(() => console.log('Updated count !!!'));
+    });
+  }
 }
 
-// function listLabels(auth) {
-//   const gmail = google.gmail({ version: 'v1', auth });
-//   gmail.users.labels.list({
-//     userId: 'me',
-//   }, (err, res) => {
-//     if (err) return console.log('The API returned an error: ' + err);
-//     const labels = res.data.labels;
-//     if (labels.length) {
-//       console.log('Labels:');
-//       labels.forEach((label) => {
-//         console.log(`- ${label.name}`);
-//       });
-//     } else {
-//       console.log('No labels found.');
-//     }
-//   });
-// }
+const googleApi = new GoogleApi();
 
-module.exports = getUrl;
+module.exports = googleApi;
