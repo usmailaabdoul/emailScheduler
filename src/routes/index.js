@@ -9,9 +9,9 @@ router.get('/', async (req, res) => {
   });
 })
 
-// router.get('/terms&service', (req, res) => {
-//   res.render(`pages/terms&service`);
-// })
+router.get('/terms&service', (req, res) => {
+  res.render(`pages/terms&service`);
+})
 
 router.get('/statistics', async (req, res) => {
   const users = await UserService.findUser();
