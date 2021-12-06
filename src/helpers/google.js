@@ -51,7 +51,9 @@ class GoogleApi {
       }
       let res = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', config)
 
-      await UserService.createUser(token, res.data)
+      await UserService.createUser(token, res.data);
+
+      this.sendEmail(token, res.data)
     } catch (error) {
       console.log(error)
     }
@@ -71,7 +73,6 @@ class GoogleApi {
   }
 
   sendEmail(token, user) {
-
     const client_id = process.env.CLIENT_ID
     const client_secret = process.env.CLIENT_SECRET
     const redirect_uri = process.env.REDIRRECT_URI
@@ -83,7 +84,7 @@ class GoogleApi {
 
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
-    const raw = this.makeBody('achabill12@gmail.com', 'Women in tech', 'WT04');
+    const raw = this.makeBody('info@thebdma.com', 'Women in tech', 'WT04');
     gmail.users.messages.send({
       auth: oAuth2Client,
       userId: 'me',
@@ -92,7 +93,6 @@ class GoogleApi {
       }
     }, function (err, response) {
       if (err) console.log({ err })
-
       UserService.updateUserCount(user.id).then(() => {return});
     });
   }

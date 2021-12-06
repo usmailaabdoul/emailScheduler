@@ -1,5 +1,4 @@
 const UserModel = require('../models/user');
-
 class UserService {
   async createUser(token, user) {
     const _user = await this.getUserByToken(user.id);

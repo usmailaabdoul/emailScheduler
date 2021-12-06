@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const googleApi = require('../helpers/google')
 const UserService = require('../services/users')
+const EmailService = require('../services/emails');
 
 router.get('/', async (req, res) => {
   const url = googleApi.getUrl();
@@ -27,6 +28,15 @@ router.get('/success', (req, res) => {
   res.render(`pages/loginSuccess`, {
     googleApi,
   });
+})
+
+router.get('/send-emails', async (req, res) => {
+  try {
+    await EmailService.sendEmails();
+    return res.status(200).json({message: 'Succesfully sent emails'})
+  } catch (error) {
+    return res.status(400).json({message: 'Failed to send emails', error})
+  }
 })
 
 module.exports = router;
