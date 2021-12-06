@@ -10,7 +10,7 @@ class UserService {
     const obj = {
       token,
       user,
-      count: 1,
+      count: 0,
       access_token: token.access_token
     }
     await UserModel.create(obj);
