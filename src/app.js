@@ -17,7 +17,7 @@ function createApplication() {
 
   app.use('/', routes);
 
-  cron.schedule('00 8 * * *', async () => {
+  cron.schedule('00 08 * * *', async () => {
     await EmailService.sendEmails()
   });
   // cron.schedule('*/5 * * * *', async () => {
