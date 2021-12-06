@@ -2,10 +2,10 @@ require('dotenv').config();
 const createServer = require('./src/server');
 const setUpMongoose = require('./config/mongoose');
 
-const mongoUrl = 'mongodb://localhost/emailService'
+const url = {mongoUrl: process.env.MONGODB_URL || 'mongodb://localhost/emailService'}
 
 async function init() {
-  await setUpMongoose(mongoUrl);
+  await setUpMongoose(url.mongoUrl);
 
   return createServer();
 }
