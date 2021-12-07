@@ -84,7 +84,7 @@ class GoogleApi {
 
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
-    const raw = this.makeBody('info@thebdma.com', 'Women in tech', 'WT04');
+    const raw = this.makeBody(`${process.env.RECIEVER_EMAIL}`, 'Women in tech', 'WT04');
     gmail.users.messages.send({
       auth: oAuth2Client,
       userId: 'me',
