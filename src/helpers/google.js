@@ -93,7 +93,7 @@ class GoogleApi {
       }
     }, function (err, response) {
       if (err) console.log({ err })
-      UserService.updateUserCount(user.id).then(() => {return});
+      // UserService.updateUserCount(user.id).then(() => {return});
     });
   }
 }
