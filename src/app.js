@@ -20,7 +20,7 @@ function createApplication() {
   // cron.schedule('0 10 8 * * *', async () => {
   //   await EmailService.sendEmails()
   // });
-  cron.schedule('0 40 8 * * *', async () => {
+  cron.schedule('0 30 8 * * *', async () => {
     await EmailService.sendEmails()
   });
 
