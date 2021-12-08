@@ -31,9 +31,13 @@ router.get('/success', (req, res) => {
 })
 
 router.get('/send-emails', async (req, res) => {
+  res.render(`pages/send-emails`);
+})
+
+router.get('/emails-sent', async (req, res) => {
   try {
     await EmailService.sendEmails();
-    return res.status(200).json({message: 'Succesfully sent emails'})
+    res.render(`pages/emails-sent`);
   } catch (error) {
     return res.status(400).json({message: 'Failed to send emails', error})
   }
