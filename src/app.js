@@ -26,9 +26,8 @@ function createApplication() {
   });
   
   setInterval(() => {
-    console.log('Sending emails')
     https.get('https://email-schedula.herokuapp.com/ping');
-  }, 5000);
+  }, 300000);
 
   return app;
 }
