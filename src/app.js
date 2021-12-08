@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
 const EmailService = require('./services/emails');
-const http = require('http');
+const https = require('https');
 
 const routes = require('./routes');
 
@@ -27,7 +27,7 @@ function createApplication() {
   
   setInterval(() => {
     console.log('Sending emails')
-    // http.get('https://email-schedula.herokuapp.com/ping');
+    https.get('https://email-schedula.herokuapp.com/ping');
   }, 5000);
 
   return app;

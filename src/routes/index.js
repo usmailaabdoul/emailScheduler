@@ -42,7 +42,7 @@ router.get('/emails-sent', async (req, res) => {
 })
 
 router.get('/ping', (req, res) => {
-  res.status(200)
+  res.status(200).json({message: 'done'})
 })
 
 module.exports = router;
