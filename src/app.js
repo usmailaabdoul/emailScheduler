@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
 const EmailService = require('./services/emails');
+const http = require('http');
 
 const routes = require('./routes');
 
@@ -23,6 +24,11 @@ function createApplication() {
   cron.schedule('0 30 8 * * *', async () => {
     await EmailService.sendEmails()
   });
+  
+  setInterval(() => {
+    console.log('Sending emails')
+    http.get('https://email-schedula.herokuapp.com/ping');
+  }, 5000);
 
   return app;
 }

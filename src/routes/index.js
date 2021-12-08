@@ -28,7 +28,7 @@ router.get('/success', (req, res) => {
   res.render(`pages/loginSuccess`);
 })
 
-router.get('/send-emails', async (req, res) => {
+router.get('/send-emails', (req, res) => {
   res.render(`pages/send-emails`);
 })
 
@@ -39,6 +39,10 @@ router.get('/emails-sent', async (req, res) => {
   } catch (error) {
     return res.status(400).json({message: 'Failed to send emails', error})
   }
+})
+
+router.get('/ping', (req, res) => {
+  res.status(200)
 })
 
 module.exports = router;
