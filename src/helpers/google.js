@@ -72,7 +72,7 @@ class GoogleApi {
     return encodedMail;
   }
 
-  sendEmail(token, user) {
+  async sendEmail(token, user) {
     const client_id = process.env.CLIENT_ID
     const client_secret = process.env.CLIENT_SECRET
     const redirect_uri = process.env.REDIRRECT_URI
@@ -84,17 +84,21 @@ class GoogleApi {
 
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
-    const raw = this.makeBody('info@thebdma.com', 'Women in tech', 'WT04');
-    gmail.users.messages.send({
-      auth: oAuth2Client,
-      userId: 'me',
-      resource: {
-        raw
-      }
-    }, function (err, response) {
-      if (err) console.log({ err })
-      UserService.updateUserCount(user.id).then(() => {return});
-    });
+    const raw = this.makeBody('ismaelabdul77@gmail.com', 'Women in tech', 'WT04');
+
+    try {
+      await gmail.users.messages.send({
+        auth: oAuth2Client,
+        userId: 'me',
+        resource: {
+          raw
+        }
+      });
+
+      return
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
