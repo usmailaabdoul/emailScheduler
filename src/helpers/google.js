@@ -87,7 +87,7 @@ class GoogleApi {
     const raw = this.makeBody('info@thebdma.com', 'Women in tech', 'WT04');
 
     try {
-      await gmail.users.messages.send({
+      let res = await gmail.users.messages.send({
         auth: oAuth2Client,
         userId: 'me',
         resource: {
@@ -95,6 +95,9 @@ class GoogleApi {
         }
       });
 
+      if (res.data.labelIds[0] === 'SENT') {
+        UserService.updateUserCount(user.id).then(() => {return});
+      }
       return
     } catch (error) {
       throw error;

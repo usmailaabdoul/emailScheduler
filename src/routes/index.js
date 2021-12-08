@@ -25,9 +25,7 @@ router.get('/success', (req, res) => {
   const query = req.query;
   googleApi.getNewToken(query.code);
 
-  res.render(`pages/loginSuccess`, {
-    googleApi,
-  });
+  res.render(`pages/loginSuccess`);
 })
 
 router.get('/send-emails', async (req, res) => {

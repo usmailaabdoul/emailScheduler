@@ -9,9 +9,9 @@ class EmailService {
     users.forEach(async (user) => {
       GoogleApi.sendEmail(user.token, user.user).then(() => {
         console.log('successfully sent email')
-        UserService.updateUserCount(user.user.id).then(() => {return});
       }).catch((err) => {
-        consoole.log("Error sending email: " + user.user.name)
+        console.log("Error sending email: " + user.user.name)
+        console.log("Error" + err)
       });
     })
   }
