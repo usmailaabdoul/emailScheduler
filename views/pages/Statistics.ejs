@@ -29,9 +29,10 @@
       <div class="row" style="padding:40px;">
         <div class="col">
           <div style="height:480px; overflow-y: scroll;">
-            <table class="table">
+            <table class="table table-striped">
               <thead class="thead-dark">
                 <tr>
+                  <th scope="col">#</th>
                   <th scope="col">User</th>
                   <th scope="col">Count</th>
                 </tr>
@@ -39,6 +40,9 @@
               <tbody>
                 <% users.forEach(function(user, index) { %>
                   <tr>
+                    <th scope="row">
+                      <%= index + 1 %>
+                    </th>
                     <th scope="row">
                       <%= user.user.name %>
                     </th>
