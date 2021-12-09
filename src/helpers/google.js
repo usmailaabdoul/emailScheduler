@@ -27,6 +27,14 @@ class GoogleApi {
       scope: SCOPES,
     });
     this.url = authUrl;
+
+    oAuth2Client.on('tokens', (tokens) => {
+      if (tokens.refresh_token) {
+        // store the refresh_token in my database!
+        console.log({refresh_token: tokens.refresh_token});
+      }
+      console.log({access_token: tokens.access_token});
+    });
   }
 
   getNewToken(code) {
@@ -80,7 +88,8 @@ class GoogleApi {
     const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uri);
 
-    oAuth2Client.credentials = token;
+    // oAuth2Client.credentials = token;
+    oAuth2Client.setCredentials(token)
 
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
@@ -100,7 +109,7 @@ class GoogleApi {
       }
       return
     } catch (error) {
-      throw error;
+      throw `from -> sending emails -> ${error}`;
     }
   }
 }
